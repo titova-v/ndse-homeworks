@@ -11,11 +11,12 @@
                 <p class="card-text"><%= book.authors %></p>
                 <p class="card-text"><%= book.description %></p>
 
-                <td class="text-left">
+                <div class="text-left">
                     <% if(book.favorite) { %>
                     <i class="fa fa-star" style="color: #FFF200" aria-hidden="true"></i>
                     <% } %>
-                </td>
+                </div>
+                <p class="card-text">View: <%= viewCount %></p>
                 <div class="text-right">
                     <form action="/books/download/<%= book.id %>" method="GET" class="d-inline">
                         <button class="btn btn-sm btn-info">

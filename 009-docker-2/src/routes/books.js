@@ -1,8 +1,17 @@
 const express = require('express')
 const {v4: uuid} = require("uuid")
 const bookMulter = require("../middleware/book")
+const { Counter } = require('./counter')
 
 const router = express.Router()
+const DEFAULT_BOOKS = [
+    {
+        id: '123-qwerty-456',
+        title: 'Alice in Wonderland',
+        authors: 'Lewis Carroll',
+        favorite: true
+    }
+]
 
 class Library {
     constructor(storage = []) {
@@ -10,7 +19,7 @@ class Library {
     }
 }
 
-const library = new Library()
+const library = new Library(DEFAULT_BOOKS)
 
 class Book {
     constructor(title = "", description = "", authors = "", favorite = false, fileCover = "", fileName = "", fileBook = "", id = uuid()) {
@@ -47,13 +56,29 @@ router.get('/:id', (req, res) => {
     const idx = storage.findIndex(el => el.id === id)
 
     if (idx != -1) {
-        res.render("book/view", {
-            title: storage[idx].title,
-            book: storage[idx]
-        });
+        Counter.getCount(id, response => {
+            if (response.statusCode !== 500) {
+                response.setEncoding('utf8')
+                let rowData = ''
+            
+                response.on('data', chunk => {
+                    rowData += chunk
+                })
+            
+                response.on('end', () => {
+                    let viewCount = JSON.parse(rowData).count
+
+                    res.render("book/view", {
+                        title: storage[idx].title,
+                        book: storage[idx],
+                        viewCount
+                    });
+                    Counter.setCount(id)
+                })
+            }
+        })
     } else {
-        res.status(404)
-        res.json('Code: 404')
+        res.redirect('/404') 
     }
 })
 router.get('/download/:id', (req, res) => {
@@ -63,9 +88,12 @@ router.get('/download/:id', (req, res) => {
 
     if (idx != -1) {
         const book = storage[idx]
-        res.download(book.fileBook, book.fileName)
+        if (book.fileBook)
+            res.download(book.fileBook, book.fileName)
+        else
+            res.redirect('/404') 
     } else {
-        res.redirect('/404')
+        res.redirect('/404') 
     }
 })
 

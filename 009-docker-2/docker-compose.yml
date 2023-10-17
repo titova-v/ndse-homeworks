@@ -1,0 +1,23 @@
+services:
+  storage:
+    image: redis
+    volumes:
+      - ./data:/data
+  counter:
+    image: leronbaton/counter:v4.0.0
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis://storage
+    depends_on:
+      - storage
+  library:
+    image: leronbaton/library:v2.0.0
+    ports:
+      - 80:3002
+    environment:
+      - PORT=3002
+      - COUNTER_URL=counter
+    depends_on:
+      - counter
