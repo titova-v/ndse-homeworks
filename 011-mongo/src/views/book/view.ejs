@@ -1,0 +1,41 @@
+<%- include('../port/layout-start', {title}) %>
+<%- include('../port/menu') %>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+
+                <img src="../library/covers/<%= book.fileCover %>" style="max-width: 200px; max-height: 200px;">
+                <h5 class="card-title"><%= book.title %></h5>
+                <p class="card-text"><%= book.authors %></p>
+                <p class="card-text"><%= book.description %></p>
+
+                <div class="text-left">
+                    <% if(book.favorite) { %>
+                    <i class="fa fa-star" style="color: #FFF200" aria-hidden="true"></i>
+                    <% } %>
+                </div>
+                <p class="card-text">View: <%= viewCount %></p>
+                <div class="text-right">
+                    <form action="/books/download/<%= book.id %>" method="GET" class="d-inline">
+                        <button class="btn btn-sm btn-info">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                    <a class="btn btn-sm btn-primary" href="/books/update/<%= book.id %>">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <form action="/books/delete/<%= book.id %>" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../port/layout-end') %>
