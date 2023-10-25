@@ -25,4 +25,27 @@
   description: "string",
   authors: "string"
 }
-``` 
+```
+
+#### Решение
+
+```
+db.books.insertMany([
+  { title: "Alice's adventures in Wonderland", description: "Story about a girl falling through a rabbit hole into a fantasy world populated by peculiar, anthropomorphic creatures", authors: "Lewis Carroll" },
+  { title: "Harry Potter and the Philosopher's Stone", description: "Story about a boy who alived", authors: "Joanne Kathleen Rowling" }
+])
+```
+
+```
+const title = "Harry Potter and the Philosopher's Stone"
+db.books.find({title})
+```
+
+```
+const id = this.id
+db.books.updateOne(
+ {_id: id },
+ { $set: { authors: "J.K. Rowling", description: "Its story follows Harry's first year at Hogwarts School of Witchcraft and Wizardry as he discovers that he is a famous wizard and begins his formal wizarding education" }}
+)
+```
+
