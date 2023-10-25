@@ -61,8 +61,8 @@ router.get('/download/:id', async (req, res) => {
     try {
         book = await Book.findById(id)
 
-        if (book.fileBook)
-            res.download(book.fileBook, book.fileName)
+        if (book.fileName)
+            res.download(`src/library/books/${book.fileName}`, book.fileName)
         else
             res.redirect('/404') 
     } catch {
@@ -74,10 +74,9 @@ router.post('/create', bookMulter.fields([{name:'fileCover', maxCount:1},{name: 
     const {title, description, authors} = req.body
     const favorite = req.body.favorite ? true : false
     const fileCover = (req.files && req.files.fileCover) ? req.files.fileCover[0].filename : undefined
-    const fileBook = (req.files && req.files.fileBook) ? req.files.fileBook[0].path : undefined
-    const fileName = (req.body.fileName + (fileBook ? `.${fileBook.split('.').reverse()[0]}` : "")) || ((req.files && req.files.fileBook) ? req.files.fileBook[0].filename : undefined)
+    const fileName = (req.files && req.files.fileBook) ? req.files.fileBook[0].filename : undefined
 
-    const newBook = new Book({title, description, authors, favorite, fileCover, fileName, fileBook})
+    const newBook = new Book({title, description, authors, favorite, fileCover, fileName})
 
     try {
         await newBook.save()
@@ -112,15 +111,13 @@ router.post('/update/:id', bookMulter.fields([{name:'fileCover',maxCount:1},{nam
     const {title, description, authors} = req.body
     const favorite = req.body.favorite ? true : false
     const fileCover = (req.files && req.files.fileCover) ? req.files.fileCover[0].filename : undefined
-    const fileBook = (req.files && req.files.fileBook) ? req.files.fileBook[0].path : undefined
-    const fileName = (req.body.fileName + (fileBook ? `.${fileBook.split('.').reverse()[0]}` : ""))  || ((req.files && req.files.fileBook) ? req.files.fileBook[0].filename : undefined);
+    const fileName = (req.files && req.files.fileBook) ? req.files.fileBook[0].filename : undefined;
 
     (title != undefined) && (newParams.title = title);
     (description != undefined) && (newParams.description = description);
     (authors != undefined) && (newParams.authors = authors);
     (favorite != undefined) && (newParams.favorite = favorite);
     (fileCover != undefined) && (newParams.fileCover = fileCover);
-    (fileBook != undefined) && (newParams.fileBook = fileBook);
     (fileName != undefined) && (newParams.fileName = fileName);
 
     try {

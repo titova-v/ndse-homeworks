@@ -35,7 +35,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
 
   library:
-    image: leronbaton/library:v3.1.0
+    image: leronbaton/library:v3.0.0
     ports:
       - 80:3002
     environment:
